@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>600</width>
+    <height>400</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>图片压缩工具</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QWidget" name="horizontalLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>50</x>
+      <y>20</y>
+      <width>491</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QLineEdit" name="filePathEdit">
+       <property name="text">
+        <string extracomment="请输入要压缩的文件或目录"/>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="browserFileBtn">
+       <property name="text">
+        <string>浏览文件</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QPushButton" name="compressBtn">
+    <property name="geometry">
+     <rect>
+      <x>460</x>
+      <y>310</y>
+      <width>80</width>
+      <height>26</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>压缩</string>
+    </property>
+   </widget>
+   <widget class="QListWidget" name="fileListView">
+    <property name="geometry">
+     <rect>
+      <x>50</x>
+      <y>90</y>
+      <width>491</width>
+      <height>201</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="overrideSrc">
+    <property name="geometry">
+     <rect>
+      <x>50</x>
+      <y>310</y>
+      <width>82</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>覆盖源文件</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>600</width>
+     <height>23</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <tabstops>
+  <tabstop>filePathEdit</tabstop>
+  <tabstop>browserFileBtn</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>
