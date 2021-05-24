@@ -11,11 +11,14 @@ CONFIG += c++11
 SOURCES += \
     cfiledialog.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    postfile.cpp
 
 HEADERS += \
     cfiledialog.h \
-    mainwindow.h
+    mainwindow.h \
+    networkrequestcallback.h \
+    postfile.h
 
 FORMS += \
     mainwindow.ui

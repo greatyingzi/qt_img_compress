@@ -4,6 +4,8 @@
 #include "cfiledialog.h"
 #include <QDebug>
 #include <QStandardPaths>
+#include "networkrequestcallback.h"
+#include "postfile.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -64,6 +66,9 @@ void MainWindow::startCompress()
 
     needOverride = ui->overrideSrc->isChecked();
     files = ui->filePathEdit->text();
+
+    PostFile *postFile = new PostFile(&files);
+    postFile->startPost();
 }
 
 QString MainWindow::getUserPath()
