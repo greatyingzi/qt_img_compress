@@ -3,6 +3,8 @@
 
 #include <QMainWindow>
 
+#include "cfiledialog.h"
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
@@ -13,9 +15,18 @@ class MainWindow : public QMainWindow
 
 public:
     MainWindow(QWidget *parent = nullptr);
+    QString getUserPath();
     ~MainWindow();
+
+private slots:
+    void openFile();
+    void onChiose();
+    void startCompress();
 
 private:
     Ui::MainWindow *ui;
+    CFileDialog *fileDialog;
+    bool needOverride;
+    QString files;
 };
 #endif // MAINWINDOW_H

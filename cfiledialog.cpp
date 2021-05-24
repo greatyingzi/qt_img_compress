@@ -19,18 +19,11 @@ CFileDialog::CFileDialog(QWidget *parent)
 
     QDialogButtonBox *pButton = this->findChild<QDialogButtonBox *>("buttonBox");
 
-    disconnect(pButton, SIGNAL(accepted()), this, SLOT(accept()));//使链接失效
-    connect(pButton, SIGNAL(accepted()), this, SLOT(onChiose()));//改成自己的槽
+//    disconnect(pButton, SIGNAL(accepted()), this, SLOT(accept()));//使链接失效
+//    connect(pButton, SIGNAL(accepted()), this, SLOT(onChiose()));//改成自己的槽
 }
 
 CFileDialog::~CFileDialog()
 {
-    qInfo() << "选中的文件:" << selectedFiles();
-}
 
-
-void CFileDialog::onChiose()
-{
-    QDialog::accept();
-    qDebug() << "选中的文件:" << selectedFiles();
 }

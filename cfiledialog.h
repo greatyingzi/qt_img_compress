@@ -10,10 +10,6 @@ class CFileDialog :public QFileDialog
 public:
     CFileDialog(QWidget *parent = 0);
     ~CFileDialog();
-
-public slots:
-    void onChiose();
-
 };
 
 #endif // CFILEDIALOG_H
