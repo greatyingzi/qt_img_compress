@@ -6,6 +6,7 @@
 #include <QStandardPaths>
 #include "networkrequestcallback.h"
 #include "postfile.h"
+#include <QTextStream>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -20,6 +21,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     QObject::connect(ui->browserFileBtn, SIGNAL(clicked()), this, SLOT(openFile()));
     QObject::connect(ui->compressBtn,SIGNAL(clicked()),this,SLOT(startCompress()));
+    QObject::connect(ui->testBtn,SIGNAL(clicked()),this,SLOT(readText()));
 }
 
 MainWindow::~MainWindow()
@@ -36,7 +38,8 @@ void MainWindow::openFile()
     fileDialog->setDirectory(getUserPath());
     fileDialog->setFileMode(QFileDialog::FileMode::AnyFile);
     fileDialog->setAcceptMode(QFileDialog::AcceptMode::AcceptOpen);
-    fileDialog->setNameFilter(tr("All Images (*.jpg *.jpeg *.png);;"));
+    fileDialog->setNameFilter(tr("All Images (*.jpg *.jpeg *.png);;"
+                                 "All Texts (*.txt *.text *.html);;"));
     fileDialog->exec();
 }
 
@@ -60,19 +63,37 @@ void MainWindow::onChiose()
 
 void MainWindow::startCompress()
 {
-    ui->overrideSrc->setEnabled(false);
-    ui->filePathEdit->setEnabled(false);
-    ui->browserFileBtn->setEnabled(false);
+
+    forzenWidgets(true);
 
     needOverride = ui->overrideSrc->isChecked();
     files = ui->filePathEdit->text();
 
-    PostFile *postFile = new PostFile(&files);
+    PostFile *postFile = new PostFile(&files,new QString("90"));
     postFile->startPost();
+}
+
+void MainWindow::readText()
+{
+    files = ui->filePathEdit->text();
+    QFile *textFile = new QFile(files);
+//    QTextStream *textStream = new QTextStream(&files,QIODevice::ReadWrite|QIODevice::Text);
+    textFile->open(QIODevice::ReadWrite|QIODevice::Text);
+    QString content = textFile->readAll();
+    textFile->close();
+    ui->textBrowser->setText(content);
+
 }
 
 QString MainWindow::getUserPath()
 {
     QString userPath = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
     return userPath;
+}
+
+void MainWindow::forzenWidgets(bool forzen){
+    ui->overrideSrc->setEnabled(forzen);
+    ui->filePathEdit->setEnabled(forzen);
+    ui->browserFileBtn->setEnabled(forzen);
+    ui->compressBtn->setEnabled(forzen);
 }

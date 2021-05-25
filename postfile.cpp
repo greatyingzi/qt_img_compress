@@ -2,50 +2,89 @@
 #include "networkrequestcallback.h"
 #include <QHttpPart>
 #include <QFile>
+#include <QFileInfo>
+#include <QHttpMultiPart>
+#include <QNetworkReply>
+#include <QJsonObject>
+#include <QJsonParseError>
+#include <QEventLoop>
 
-PostFile::PostFile(QString *picPath) : QObject(nullptr)
+PostFile::PostFile(QString *picPath, QString *qlty) : QObject(nullptr)
 {
-    this->picPath = picPath;
-
+    this->picPath = *picPath;
+    this->qlty = *qlty;
 }
 
 void PostFile::startPost(){
 
-    //网络请求处理器
-    QNetworkAccessManager manager;
-
     //设置基本URL
     QUrl url("http://api.resmush.it/ws.php");
 
-    //设置URL额外参数
-//    QUrlQuery query;
-//    query.addQueryItem("qlty", "90");
-//    url.setQuery(query);
+    //生成对应的网址请求
+    QFileInfo fileInfo(picPath);
+    QString fileName =fileInfo.fileName();
 
-    //构建请求
-    QNetworkRequest request(url);
+    QFile* inputFile = new QFile(picPath);
+    inputFile->open(QIODevice::ReadOnly);
 
-    //设置表单参数
-    QHttpMultiPart* formData = new QHttpMultiPart(QHttpMultiPart::FormDataType);
-    //添加文本表单:folder=001
-    QHttpPart textPart;
-    textPart.setHeader(QNetworkRequest::ContentDispositionHeader, "form-data; name=\"folder\"");
-    textPart.setBody("001");
-    formData->append(textPart);
-    //添加文件表单:file=File
+    //multipart请求
+    QHttpMultiPart* multiPart = new QHttpMultiPart(QHttpMultiPart::FormDataType, nullptr);
+    //文件块
     QHttpPart filePart;
-    filePart.setHeader(QNetworkRequest::ContentTypeHeader, "image/png");
-    filePart.setHeader(QNetworkRequest::ContentDispositionHeader, "form-data; name=\"files\"; filename=\"png_example_original.png\"");
-    QFile* file = new QFile(*picPath);
-    file->open(QIODevice::ReadOnly);
-    file->setParent(formData);  //绑定父级对象，Qt在父级对象回收时，会自动回收子级对象
-    filePart.setBodyDevice(file);
-    formData->append(filePart);
+    filePart.setHeader(QNetworkRequest::ContentDispositionHeader,
+                                 QVariant(QString("form-data; name=\"files\";filename=\"/home/lihneg/Downloads/q.png\"").arg(fileName)));
+    filePart.setBodyDevice(inputFile);
+    inputFile->setParent(multiPart);
+    multiPart->append(filePart);
 
-    //执行请求
-    QNetworkReply* reply = manager.post(request, formData);
+    QHttpPart paramer1Part;
+    paramer1Part.setHeader(QNetworkRequest::ContentDispositionHeader,QVariant("form-data; name=\"qlty\""));
 
-    //请求结果回调
+    paramer1Part.setBody(qlty.toUtf8());
+    multiPart->append(paramer1Part);
+
+    //生成对应的网址请求
+    QNetworkRequest request;
+    request.setUrl(url);
+
+    //发送请求
+    QNetworkAccessManager manager;
+    QNetworkReply *reply = manager.post(request,multiPart);
+    multiPart->setParent(reply);
+
+
+    QEventLoop eventLoop;
+    QObject::connect(&manager, SIGNAL(finished(QNetworkReply*)),&eventLoop, SLOT(quit()));
+    eventLoop.exec(QEventLoop::ExcludeUserInputEvents);
+
+    inputFile->close();
+    qInfo() << "文件上传结束";
+
+    NetworkRequestCallback *callback = new NetworkRequestCallback;
+
+    if(reply->error() != QNetworkReply::NoError)
+    {
+        qInfo() << reply->error();
+        return;
+    }
+
+    //解析返回的Json结果
+    QByteArray replyData = reply->readAll();
+    QJsonParseError json_error;
+    QJsonDocument jsonDoc(QJsonDocument::fromJson(replyData, &json_error));
+    if(json_error.error != QJsonParseError::NoError)
+    {
+        qInfo() << "json 解析失败";
+        return;
+    }
+    QJsonObject rootObj = jsonDoc.object();
+    QString codeStr = rootObj.value("code").toString();
+
+
+    QString destUrl = rootObj.value("dest").toString();
+    qInfo() << "上传结果：" << destUrl;
+
+//    //请求结果回调
 //    NetworkRequestCallback *callback = new NetworkRequestCallback;
 //    callback->reset(reply);
 //    QObject::connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), callback, SLOT(onError(QNetworkReply::NetworkError)));

@@ -7,10 +7,11 @@ class PostFile : public QObject
 {
     Q_OBJECT
 public:
-    explicit PostFile(QString *picPath = nullptr);
     void startPost();
+    explicit PostFile(QString *picPath, QString *qlty);
 private:
-    QString *picPath;
+    QString picPath;
+    QString qlty;
 signals:
 
 };

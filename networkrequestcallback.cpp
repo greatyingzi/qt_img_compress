@@ -1,5 +1,7 @@
+#include "networkrequestcallback.h"
+#include<QObject>
 
-NetworkRequestCallback::NetworkRequestCallback(QObject *parent) : QObject(parent)
+NetworkRequestCallback::NetworkRequestCallback(QObject* parent)
 {
 
-}
+};

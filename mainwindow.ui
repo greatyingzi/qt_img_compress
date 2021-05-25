@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>600</width>
-    <height>400</height>
+    <width>611</width>
+    <height>413</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -26,8 +26,23 @@
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QLineEdit" name="filePathEdit">
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="statusTip">
+        <string/>
+       </property>
+       <property name="whatsThis">
+        <string/>
+       </property>
+       <property name="inputMask">
+        <string/>
+       </property>
        <property name="text">
         <string extracomment="请输入要压缩的文件或目录"/>
+       </property>
+       <property name="placeholderText">
+        <string>请输入要压缩的文件或目录</string>
        </property>
       </widget>
      </item>
@@ -43,10 +58,10 @@
    <widget class="QPushButton" name="compressBtn">
     <property name="geometry">
      <rect>
-      <x>460</x>
-      <y>310</y>
-      <width>80</width>
-      <height>26</height>
+      <x>449</x>
+      <y>300</y>
+      <width>91</width>
+      <height>41</height>
      </rect>
     </property>
     <property name="text">
@@ -57,9 +72,9 @@
     <property name="geometry">
      <rect>
       <x>50</x>
-      <y>90</y>
+      <y>240</y>
       <width>491</width>
-      <height>201</height>
+      <height>51</height>
      </rect>
     </property>
    </widget>
@@ -68,12 +83,42 @@
      <rect>
       <x>50</x>
       <y>310</y>
-      <width>82</width>
+      <width>121</width>
       <height>24</height>
      </rect>
     </property>
     <property name="text">
      <string>覆盖源文件</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="testBtn">
+    <property name="geometry">
+     <rect>
+      <x>230</x>
+      <y>300</y>
+      <width>117</width>
+      <height>37</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>测试</string>
+    </property>
+   </widget>
+   <widget class="QTextBrowser" name="textBrowser">
+    <property name="geometry">
+     <rect>
+      <x>55</x>
+      <y>80</y>
+      <width>491</width>
+      <height>141</height>
+     </rect>
+    </property>
+    <property name="html">
+     <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Noto Sans CJK SC'; font-size:12pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;sdfasdfasdf&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
   </widget>
@@ -82,8 +127,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>600</width>
-     <height>23</height>
+     <width>611</width>
+     <height>39</height>
     </rect>
    </property>
   </widget>

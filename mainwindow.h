@@ -18,10 +18,12 @@ public:
     QString getUserPath();
     ~MainWindow();
 
+    void forzenWidgets(bool forzen);
 private slots:
     void openFile();
     void onChiose();
     void startCompress();
+    void readText();
 
 private:
     Ui::MainWindow *ui;

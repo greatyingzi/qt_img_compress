@@ -12,7 +12,8 @@ SOURCES += \
     cfiledialog.cpp \
     main.cpp \
     mainwindow.cpp \
-    postfile.cpp
+    postfile.cpp \
+    networkrequestcallback.cpp
 
 HEADERS += \
     cfiledialog.h \
