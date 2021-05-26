@@ -1,5 +1,4 @@
 #include "postfile.h"
-#include "networkrequestcallback.h"
 #include <QHttpPart>
 #include <QFile>
 #include <QFileInfo>
@@ -9,10 +8,10 @@
 #include <QJsonParseError>
 #include <QEventLoop>
 
-PostFile::PostFile(QString *picPath, QString *qlty) : QObject(nullptr)
+PostFile::PostFile(const QString &picPath,const  QString &qlty) : QObject(nullptr)
 {
-    this->picPath = *picPath;
-    this->qlty = *qlty;
+    this->picPath = picPath;
+    this->qlty = qlty;
 }
 
 void PostFile::startPost(){
@@ -32,7 +31,7 @@ void PostFile::startPost(){
     //文件块
     QHttpPart filePart;
     filePart.setHeader(QNetworkRequest::ContentDispositionHeader,
-                                 QVariant(QString("form-data; name=\"files\";filename=\"/home/lihneg/Downloads/q.png\"").arg(fileName)));
+                                 QVariant(QString("form-data; name=\"files\";filename=\"").append(picPath).append("\"").arg(fileName)));
     filePart.setBodyDevice(inputFile);
     inputFile->setParent(multiPart);
     multiPart->append(filePart);
@@ -60,8 +59,6 @@ void PostFile::startPost(){
     inputFile->close();
     qInfo() << "文件上传结束";
 
-    NetworkRequestCallback *callback = new NetworkRequestCallback;
-
     if(reply->error() != QNetworkReply::NoError)
     {
         qInfo() << reply->error();
@@ -82,11 +79,6 @@ void PostFile::startPost(){
 
 
     QString destUrl = rootObj.value("dest").toString();
-    qInfo() << "上传结果：" << destUrl;
-
-//    //请求结果回调
-//    NetworkRequestCallback *callback = new NetworkRequestCallback;
-//    callback->reset(reply);
-//    QObject::connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), callback, SLOT(onError(QNetworkReply::NetworkError)));
-//    QObject::connect(reply, SIGNAL(readyRead()), callback, SLOT(onRead()));
+    qInfo() << "压缩结果结果：" << destUrl;
+    emit compressedSuccess(destUrl, picPath);
 }

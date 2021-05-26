@@ -7,13 +7,13 @@ class PostFile : public QObject
 {
     Q_OBJECT
 public:
+    explicit PostFile(const QString &picPath, const QString &qlty);
     void startPost();
-    explicit PostFile(QString *picPath, QString *qlty);
 private:
     QString picPath;
     QString qlty;
 signals:
-
+    void compressedSuccess(const QString &url,const QString &srcFile);
 };
 
 #endif // POSTFILE_H

@@ -6,22 +6,25 @@
 #include <QStandardPaths>
 #include "networkrequestcallback.h"
 #include "postfile.h"
-#include <QTextStream>
+#include "downloadfile.h"
+#include <QMessageBox>
+
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    setBackgroundRole(QPalette::ColorRole::Dark);
     setFixedSize(600,400);
+    setWindowIcon(QIcon(":res/img/compress.png"));
 
-    fileDialog = new CFileDialog;
+    fileSrcDialog = new CFileDialog;
+    fileSaveDirDialog = new CFileDialog;
     qInfo() << "MainWindow初始化。";
 
-    QObject::connect(ui->browserFileBtn, SIGNAL(clicked()), this, SLOT(openFile()));
+    QObject::connect(ui->browserFileBtn, SIGNAL(clicked()), this, SLOT(openSrcFile()));
+    QObject::connect(ui->browserFileSaveBtn, SIGNAL(clicked()), this, SLOT(openSaveDir()));
     QObject::connect(ui->compressBtn,SIGNAL(clicked()),this,SLOT(startCompress()));
-    QObject::connect(ui->testBtn,SIGNAL(clicked()),this,SLOT(readText()));
 }
 
 MainWindow::~MainWindow()
@@ -29,25 +32,25 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::openFile()
+void MainWindow::openSrcFile()
 {
-    if (fileDialog)
-        delete fileDialog;
-    fileDialog = new CFileDialog;
-    connect(fileDialog,SIGNAL(accepted()),this,SLOT(onChiose()));
-    fileDialog->setDirectory(getUserPath());
-    fileDialog->setFileMode(QFileDialog::FileMode::AnyFile);
-    fileDialog->setAcceptMode(QFileDialog::AcceptMode::AcceptOpen);
-    fileDialog->setNameFilter(tr("All Images (*.jpg *.jpeg *.png);;"
+    if (fileSrcDialog)
+        delete fileSrcDialog;
+    fileSrcDialog = new CFileDialog;
+    connect(fileSrcDialog,SIGNAL(accepted()),this,SLOT(onSrcFileChiose()));
+    fileSrcDialog->setDirectory(getUserPath());
+    fileSrcDialog->setFileMode(QFileDialog::FileMode::AnyFile);
+    fileSrcDialog->setAcceptMode(QFileDialog::AcceptMode::AcceptOpen);
+    fileSrcDialog->setNameFilter(tr("All Images (*.jpg *.jpeg *.png);;"
                                  "All Texts (*.txt *.text *.html);;"));
-    fileDialog->exec();
+    fileSrcDialog->exec();
 }
 
-void MainWindow::onChiose()
+void MainWindow::onSrcFileChiose()
 {
     QString files = "";
 
-    QStringList fileList = fileDialog->selectedFiles();
+    QStringList fileList = fileSrcDialog->selectedFiles();
     qInfo() << "选中的文件:" << fileList;
 
     for (int i = 0;i<fileList.size();i++)
@@ -61,28 +64,70 @@ void MainWindow::onChiose()
     ui->filePathEdit->setText(files);
 }
 
+void MainWindow::openSaveDir()
+{
+    if (fileSrcDialog)
+        delete fileSrcDialog;
+    fileSrcDialog = new CFileDialog;
+    connect(fileSrcDialog,SIGNAL(accepted()),this,SLOT(onSaveDirChiose()));
+    fileSrcDialog->setDirectory(getUserPath());
+    fileSrcDialog->setFileMode(QFileDialog::FileMode::Directory);
+    fileSrcDialog->setAcceptMode(QFileDialog::AcceptMode::AcceptOpen);
+
+    fileSrcDialog->exec();
+}
+
+
+void MainWindow::onSaveDirChiose()
+{
+    QString files = "";
+
+    QStringList fileList = fileSrcDialog->selectedFiles();
+    qInfo() << "选中的文件:" << fileList;
+
+    for (int i = 0;i<fileList.size();i++)
+    {
+        files.append(fileList.at(i)).append(";");
+    }
+
+    //移除最后的“;”
+    files.remove(files.size()-1,1);
+
+    ui->filePathSaveEdit->setText(files);
+}
+
 void MainWindow::startCompress()
 {
+    QString src = ui->filePathEdit->text();
+    saveDir = ui->filePathSaveEdit->text();
 
-    forzenWidgets(true);
+    if (src.isEmpty()||saveDir.isEmpty()){
+        QMessageBox::information(this, "提示", "路径不能为空");
+        return;
+    }
+
+    forzenWidgets(false);
 
     needOverride = ui->overrideSrc->isChecked();
-    files = ui->filePathEdit->text();
+    srcFiles = ui->filePathEdit->text();
 
-    PostFile *postFile = new PostFile(&files,new QString("90"));
+    PostFile *postFile = new PostFile(srcFiles,"90");
+    QObject::connect(postFile, SIGNAL(compressedSuccess(QString,QString)), this, SLOT(compressedSuccess(QString,QString)));
     postFile->startPost();
 }
 
-void MainWindow::readText()
+void MainWindow::compressedSuccess(const QString &url,const QString &srcFile)
 {
-    files = ui->filePathEdit->text();
-    QFile *textFile = new QFile(files);
-//    QTextStream *textStream = new QTextStream(&files,QIODevice::ReadWrite|QIODevice::Text);
-    textFile->open(QIODevice::ReadWrite|QIODevice::Text);
-    QString content = textFile->readAll();
-    textFile->close();
-    ui->textBrowser->setText(content);
+    qInfo() << "文件压缩成功";
+    ui->label->setText(ui->label->text().append(url));
+    DownloadFile* downloadFile = new DownloadFile(url,saveDir,"filemane",srcFile);
+    connect(downloadFile,SIGNAL(onDownloadSuccess(QString,QString)),this,SLOT(onDownloadSuccess(QString,QString)));
+    downloadFile->startDownload();
+}
 
+void MainWindow::onDownloadSuccess(const QString &srcFilePath, const QString &newPath)
+{
+    QMessageBox::information(this, "提示", "图片压缩成功");
 }
 
 QString MainWindow::getUserPath()
@@ -96,4 +141,7 @@ void MainWindow::forzenWidgets(bool forzen){
     ui->filePathEdit->setEnabled(forzen);
     ui->browserFileBtn->setEnabled(forzen);
     ui->compressBtn->setEnabled(forzen);
+    ui->filePathSaveEdit->setEnabled(forzen);
+    ui->browserFileSaveBtn->setEnabled(forzen);
+
 }

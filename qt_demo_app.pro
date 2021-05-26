@@ -13,13 +13,13 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     postfile.cpp \
-    networkrequestcallback.cpp
+    downloadfile.cpp
 
 HEADERS += \
     cfiledialog.h \
     mainwindow.h \
-    networkrequestcallback.h \
-    postfile.h
+    postfile.h \
+    downloadfile.h
 
 FORMS += \
     mainwindow.ui
@@ -31,3 +31,6 @@ TRANSLATIONS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+RESOURCES += \
+    res.qrc
