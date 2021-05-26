@@ -16,7 +16,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     setFixedSize(600,400);
-    setWindowIcon(QIcon(":res/img/compress.png"));
+//    setWindowIcon(QIcon(":res/img/compress.png"));
 
     fileSrcDialog = new CFileDialog;
     fileSaveDirDialog = new CFileDialog;
@@ -25,6 +25,8 @@ MainWindow::MainWindow(QWidget *parent)
     QObject::connect(ui->browserFileBtn, SIGNAL(clicked()), this, SLOT(openSrcFile()));
     QObject::connect(ui->browserFileSaveBtn, SIGNAL(clicked()), this, SLOT(openSaveDir()));
     QObject::connect(ui->compressBtn,SIGNAL(clicked()),this,SLOT(startCompress()));
+
+    forzenWidgets(true);
 }
 
 MainWindow::~MainWindow()
@@ -42,7 +44,7 @@ void MainWindow::openSrcFile()
     fileSrcDialog->setFileMode(QFileDialog::FileMode::AnyFile);
     fileSrcDialog->setAcceptMode(QFileDialog::AcceptMode::AcceptOpen);
     fileSrcDialog->setNameFilter(tr("All Images (*.jpg *.jpeg *.png);;"
-                                 "All Texts (*.txt *.text *.html);;"));
+                                 /*"All Texts (*.txt *.text *.html);;"*/));
     fileSrcDialog->exec();
 }
 
@@ -128,6 +130,7 @@ void MainWindow::compressedSuccess(const QString &url,const QString &srcFile)
 void MainWindow::onDownloadSuccess(const QString &srcFilePath, const QString &newPath)
 {
     QMessageBox::information(this, "提示", "图片压缩成功");
+    forzenWidgets(true);
 }
 
 QString MainWindow::getUserPath()
@@ -143,5 +146,9 @@ void MainWindow::forzenWidgets(bool forzen){
     ui->compressBtn->setEnabled(forzen);
     ui->filePathSaveEdit->setEnabled(forzen);
     ui->browserFileSaveBtn->setEnabled(forzen);
+
+    //禁用不支持的功能控件
+    ui->testBtn->setEnabled(false);
+    ui->overrideSrc->setEnabled(false);
 
 }
