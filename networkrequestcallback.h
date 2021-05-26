@@ -21,14 +21,14 @@ private:
 public slots:
     void onError(QNetworkReply::NetworkError status) {
         success = false;
-        qInfo() << "Request Error " << status << Qt::endl;
+        qInfo() << "Request Error " << status;
     }
     void onRead() {
         QNetworkReply::NetworkError status = reply->error();
         QByteArray byteArray = reply->readAll();
-        qInfo() << status << Qt::endl;
-        qInfo() << byteArray << Qt::endl;
-        qInfo() << "Read Byte Stream" << Qt::endl;
+        qInfo() << status;
+        qInfo() << byteArray;
+        qInfo() << "Read Byte Stream";
     }
 signals:
 
