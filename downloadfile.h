@@ -10,10 +10,11 @@ class DownloadFile : public QObject
 {
     Q_OBJECT
 public:
-    explicit DownloadFile(const QString &url, const QString &saveDir, const QString &fileName, const QString &srcFilePath);
+    explicit DownloadFile(QWidget *parent, const QString &url, const QString &saveDir, const QString &fileName, const QString &srcFilePath);
 
     void startDownload();
 
+    ~DownloadFile();
 private:
     QString url;
     QString srcFilePath;

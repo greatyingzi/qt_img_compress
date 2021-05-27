@@ -56,7 +56,6 @@ void PostFile::startPost(){
     QObject::connect(&manager, SIGNAL(finished(QNetworkReply*)),&eventLoop, SLOT(quit()));
     eventLoop.exec(QEventLoop::ExcludeUserInputEvents);
 
-    inputFile->close();
     qInfo() << "文件上传结束";
 
     if(reply->error() != QNetworkReply::NoError)
@@ -81,4 +80,12 @@ void PostFile::startPost(){
     QString destUrl = rootObj.value("dest").toString();
     qInfo() << "压缩结果结果：" << destUrl;
     emit compressedSuccess(destUrl, picPath);
+
+    inputFile->close();
+}
+
+PostFile::~PostFile()
+{
+    this->picPath = nullptr;
+    this->qlty = nullptr;
 }

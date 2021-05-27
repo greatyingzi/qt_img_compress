@@ -9,6 +9,8 @@ class PostFile : public QObject
 public:
     explicit PostFile(const QString &picPath, const QString &qlty);
     void startPost();
+
+    ~PostFile();
 private:
     QString picPath;
     QString qlty;

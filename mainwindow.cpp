@@ -18,8 +18,6 @@ MainWindow::MainWindow(QWidget *parent)
     setFixedSize(600,400);
 //    setWindowIcon(QIcon(":res/img/compress.png"));
 
-    fileSrcDialog = new CFileDialog;
-    fileSaveDirDialog = new CFileDialog;
     qInfo() << "MainWindow初始化。";
 
     QObject::connect(ui->browserFileBtn, SIGNAL(clicked()), this, SLOT(openSrcFile()));
@@ -36,9 +34,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::openSrcFile()
 {
-    if (fileSrcDialog)
-        delete fileSrcDialog;
-    fileSrcDialog = new CFileDialog;
+    fileSrcDialog = new CFileDialog(this);
     connect(fileSrcDialog,SIGNAL(accepted()),this,SLOT(onSrcFileChiose()));
     fileSrcDialog->setDirectory(getUserPath());
     fileSrcDialog->setFileMode(QFileDialog::FileMode::AnyFile);
@@ -68,9 +64,7 @@ void MainWindow::onSrcFileChiose()
 
 void MainWindow::openSaveDir()
 {
-    if (fileSrcDialog)
-        delete fileSrcDialog;
-    fileSrcDialog = new CFileDialog;
+    fileSrcDialog = new CFileDialog(this);
     connect(fileSrcDialog,SIGNAL(accepted()),this,SLOT(onSaveDirChiose()));
     fileSrcDialog->setDirectory(getUserPath());
     fileSrcDialog->setFileMode(QFileDialog::FileMode::Directory);
@@ -113,18 +107,18 @@ void MainWindow::startCompress()
     needOverride = ui->overrideSrc->isChecked();
     srcFiles = ui->filePathEdit->text();
 
-    PostFile *postFile = new PostFile(srcFiles,"90");
-    QObject::connect(postFile, SIGNAL(compressedSuccess(QString,QString)), this, SLOT(compressedSuccess(QString,QString)));
-    postFile->startPost();
+    PostFile postFile(srcFiles,"90");
+    QObject::connect(&postFile, SIGNAL(compressedSuccess(QString,QString)), this, SLOT(compressedSuccess(QString,QString)));
+    postFile.startPost();
 }
 
 void MainWindow::compressedSuccess(const QString &url,const QString &srcFile)
 {
     qInfo() << "文件压缩成功";
     ui->label->setText(ui->label->text().append(url));
-    DownloadFile* downloadFile = new DownloadFile(url,saveDir,"filemane",srcFile);
-    connect(downloadFile,SIGNAL(onDownloadSuccess(QString,QString)),this,SLOT(onDownloadSuccess(QString,QString)));
-    downloadFile->startDownload();
+    DownloadFile downloadFile(this, url,saveDir,"filemane",srcFile);
+    connect(&downloadFile,SIGNAL(onDownloadSuccess(QString,QString)),this,SLOT(onDownloadSuccess(QString,QString)));
+    downloadFile.startDownload();
 }
 
 void MainWindow::onDownloadSuccess(const QString &srcFilePath, const QString &newPath)
