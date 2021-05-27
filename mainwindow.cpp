@@ -8,7 +8,8 @@
 #include "postfile.h"
 #include "downloadfile.h"
 #include <QMessageBox>
-
+#include <QDirIterator>
+#include <QStringList>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -38,7 +39,7 @@ void MainWindow::btnOpenSrcFileClick()
     fileSrcDialog = new CFileDialog(this);
     connect(fileSrcDialog,SIGNAL(accepted()),this,SLOT(onSrcFileChiose()));
     fileSrcDialog->setDirectory(getUserPath());
-    fileSrcDialog->setFileMode(QFileDialog::FileMode::AnyFile);
+    fileSrcDialog->setFileMode(QFileDialog::FileMode::Directory);
     fileSrcDialog->setAcceptMode(QFileDialog::AcceptMode::AcceptOpen);
     fileSrcDialog->setNameFilter(tr("All Images (*.jpg *.jpeg *.png);;"
                                     /*"All Texts (*.txt *.text *.html);;"*/));
@@ -114,19 +115,39 @@ void MainWindow::btnCompressClick()
         allFiles->append(tmpFilePath);
     }else {
         //todo 遍历文件夹，获取文件列表
-
-    }
-
-    if (allFiles && !allFiles->isEmpty()) {
-        currentFile = allFiles->first();
-        allFiles->pop_front();
+        scanFile(tmpFilePath, *allFiles);
     }
 
     startCompress();
 }
 
+void MainWindow::scanFile(QString path, QStringList &fileList){
+    QStringList filters;
+    filters << QString("*.jpg") << QString("*.png" )<< QString("*.jpeg");
+
+    //定义迭代器并设置过滤器
+    QDirIterator dir_iterator(path,
+                              filters,
+                              QDir::Files | QDir::NoSymLinks,
+                              QDirIterator::Subdirectories);
+
+    while(dir_iterator.hasNext())
+    {
+        dir_iterator.next();
+        QFileInfo file_info = dir_iterator.fileInfo();
+        QString absolute_file_path = file_info.absoluteFilePath();
+        fileList.append(absolute_file_path);
+        qInfo() << absolute_file_path;
+    }
+
+}
+
 void MainWindow::startCompress()
 {
+    if (allFiles && !allFiles->isEmpty()) {
+        currentFile = allFiles->first();
+        allFiles->pop_front();
+    }
     PostFile postFile(currentFile,"90");
     QObject::connect(&postFile, SIGNAL(compressedSuccess(QString,QString)), this, SLOT(compressedSuccess(QString,QString)));
     postFile.startPost();
@@ -145,6 +166,7 @@ void MainWindow::onDownloadSuccess(const QString &srcFilePath, const QString &ne
 {
     QMessageBox::information(this, "提示", "图片压缩成功");
     forzenWidgets(true);
+    startCompress();
 }
 
 QString MainWindow::getUserPath()

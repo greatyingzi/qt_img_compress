@@ -19,6 +19,7 @@ public:
     ~MainWindow();
 
     void forzenWidgets(bool forzen);
+    void scanFile(QString path, QStringList &fileList);
 private slots:
     void btnOpenSrcFileClick();
     void onSrcFileChiose();
