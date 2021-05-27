@@ -31,7 +31,7 @@ void PostFile::startPost(){
     //文件块
     QHttpPart filePart;
     filePart.setHeader(QNetworkRequest::ContentDispositionHeader,
-                                 QVariant(QString("form-data; name=\"files\";filename=\"").append(picPath).append("\"").arg(fileName)));
+                       QVariant(QString("form-data; name=\"files\";filename=\"").append(picPath).append("\"").arg(fileName)));
     filePart.setBodyDevice(inputFile);
     inputFile->setParent(multiPart);
     multiPart->append(filePart);

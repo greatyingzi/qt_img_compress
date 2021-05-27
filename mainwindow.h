@@ -20,10 +20,11 @@ public:
 
     void forzenWidgets(bool forzen);
 private slots:
-    void openSrcFile();
+    void btnOpenSrcFileClick();
     void onSrcFileChiose();
-    void openSaveDir();
+    void btnOpenSaveDirClick();
     void onSaveDirChiose();
+    void btnCompressClick();
     void startCompress();
     void compressedSuccess(const QString &url,const QString &srcFile);
     void onDownloadSuccess(const QString &srcFilePath, const QString &newPath);
@@ -33,7 +34,8 @@ private:
     CFileDialog *fileSrcDialog;
     CFileDialog *fileSaveDirDialog;
     bool needOverride;
-    QString srcFiles;
+    QString currentFile;
+    QStringList *allFiles;
     QString saveDir;
 };
 #endif // MAINWINDOW_H

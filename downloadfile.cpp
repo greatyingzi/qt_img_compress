@@ -45,10 +45,10 @@ void DownloadFile::onFinished()
     qInfo() << "文件下载成功";
     emit onDownloadSuccess(srcFilePath,fileInfo.filePath());
 
-//    if (ui->checkBox->isChecked())   //勾选了，下载完成之后，打开下载的文件               //absoluteFilePath() 返回包含文件名的绝对路径。
-//        QDesktopServices::openUrl(QUrl::fromLocalFile(fileInfo.absoluteFilePath()));  //使用默认软件的打开下载的文件
+    //    if (ui->checkBox->isChecked())   //勾选了，下载完成之后，打开下载的文件               //absoluteFilePath() 返回包含文件名的绝对路径。
+    //        QDesktopServices::openUrl(QUrl::fromLocalFile(fileInfo.absoluteFilePath()));  //使用默认软件的打开下载的文件
 
-//    ui->btnDown->setEnabled(true);
+    //    ui->btnDown->setEnabled(true);
 }
 
 //读取下载的数据

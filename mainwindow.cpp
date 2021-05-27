@@ -16,13 +16,14 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     setFixedSize(600,400);
-//    setWindowIcon(QIcon(":res/img/compress.png"));
+    this->allFiles = new QStringList();
+    //    setWindowIcon(QIcon(":res/img/compress.png"));
 
     qInfo() << "MainWindow初始化。";
 
-    QObject::connect(ui->browserFileBtn, SIGNAL(clicked()), this, SLOT(openSrcFile()));
-    QObject::connect(ui->browserFileSaveBtn, SIGNAL(clicked()), this, SLOT(openSaveDir()));
-    QObject::connect(ui->compressBtn,SIGNAL(clicked()),this,SLOT(startCompress()));
+    QObject::connect(ui->browserFileBtn, SIGNAL(clicked()), this, SLOT(btnOpenSrcFileClick()));
+    QObject::connect(ui->browserFileSaveBtn, SIGNAL(clicked()), this, SLOT(btnOpenSaveDirClick()));
+    QObject::connect(ui->compressBtn,SIGNAL(clicked()),this,SLOT(btnCompressClick()));
 
     forzenWidgets(true);
 }
@@ -32,7 +33,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::openSrcFile()
+void MainWindow::btnOpenSrcFileClick()
 {
     fileSrcDialog = new CFileDialog(this);
     connect(fileSrcDialog,SIGNAL(accepted()),this,SLOT(onSrcFileChiose()));
@@ -40,7 +41,7 @@ void MainWindow::openSrcFile()
     fileSrcDialog->setFileMode(QFileDialog::FileMode::AnyFile);
     fileSrcDialog->setAcceptMode(QFileDialog::AcceptMode::AcceptOpen);
     fileSrcDialog->setNameFilter(tr("All Images (*.jpg *.jpeg *.png);;"
-                                 /*"All Texts (*.txt *.text *.html);;"*/));
+                                    /*"All Texts (*.txt *.text *.html);;"*/));
     fileSrcDialog->exec();
 }
 
@@ -62,7 +63,7 @@ void MainWindow::onSrcFileChiose()
     ui->filePathEdit->setText(files);
 }
 
-void MainWindow::openSaveDir()
+void MainWindow::btnOpenSaveDirClick()
 {
     fileSrcDialog = new CFileDialog(this);
     connect(fileSrcDialog,SIGNAL(accepted()),this,SLOT(onSaveDirChiose()));
@@ -92,7 +93,7 @@ void MainWindow::onSaveDirChiose()
     ui->filePathSaveEdit->setText(files);
 }
 
-void MainWindow::startCompress()
+void MainWindow::btnCompressClick()
 {
     QString src = ui->filePathEdit->text();
     saveDir = ui->filePathSaveEdit->text();
@@ -105,9 +106,28 @@ void MainWindow::startCompress()
     forzenWidgets(false);
 
     needOverride = ui->overrideSrc->isChecked();
-    srcFiles = ui->filePathEdit->text();
+    QString tmpFilePath = ui->filePathEdit->text();
 
-    PostFile postFile(srcFiles,"90");
+    QFile tmpFile(tmpFilePath);
+    QFileInfo tmpFileInfo(tmpFile);
+    if (tmpFileInfo.isFile()){
+        allFiles->append(tmpFilePath);
+    }else {
+        //todo 遍历文件夹，获取文件列表
+
+    }
+
+    if (allFiles && !allFiles->isEmpty()) {
+        currentFile = allFiles->first();
+        allFiles->pop_front();
+    }
+
+    startCompress();
+}
+
+void MainWindow::startCompress()
+{
+    PostFile postFile(currentFile,"90");
     QObject::connect(&postFile, SIGNAL(compressedSuccess(QString,QString)), this, SLOT(compressedSuccess(QString,QString)));
     postFile.startPost();
 }
