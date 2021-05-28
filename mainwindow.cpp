@@ -18,6 +18,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     setFixedSize(600,400);
     this->allFiles = new QStringList();
+    this->forzenWidgets = new QList<QWidget>();
     //    setWindowIcon(QIcon(":res/img/compress.png"));
 
     qInfo() << "MainWindow初始化。";
@@ -25,12 +26,22 @@ MainWindow::MainWindow(QWidget *parent)
     QObject::connect(ui->browserFileBtn, SIGNAL(clicked()), this, SLOT(btnOpenSrcFileClick()));
     QObject::connect(ui->browserFileSaveBtn, SIGNAL(clicked()), this, SLOT(btnOpenSaveDirClick()));
     QObject::connect(ui->compressBtn,SIGNAL(clicked()),this,SLOT(btnCompressClick()));
-
-    forzenWidgets(true);
+    QObject::connect(ui->overrideSrc,SIGNAL(clicked(bool)),ui->filePathSaveEdit,SLOT(setDisabled(bool)));
+    QObject::connect(ui->overrideSrc,SIGNAL(clicked(bool)),ui->browserFileSaveBtn,SLOT(setDisabled(bool)));
+    QObject::connect(ui->overrideSrc,SIGNAL(clicked(bool)),this,SLOT(overrideSrcClicked(bool)));
+    toggleWidgetsStatus(true);
 }
 
 MainWindow::~MainWindow()
 {
+    allFiles->clear();
+    delete allFiles;
+    allFiles = nullptr;
+
+    forzenWidgets->clear();
+    delete forzenWidgets;
+    forzenWidgets = nullptr;
+
     delete ui;
 }
 
@@ -102,15 +113,14 @@ void MainWindow::btnCompressClick()
 {
     QString src = ui->filePathEdit->text();
     saveDir = ui->filePathSaveEdit->text();
-
-    if (src.isEmpty()||saveDir.isEmpty()){
+    needOverride = ui->overrideSrc->isChecked();
+    if (src.isEmpty()||(!needOverride && saveDir.isEmpty())){
         QMessageBox::information(this, "提示", "路径不能为空");
         return;
     }
 
-    forzenWidgets(false);
+    toggleWidgetsStatus(false);
 
-    needOverride = ui->overrideSrc->isChecked();
     QString tmpFilePath = ui->filePathEdit->text();
     auto filelist = tmpFilePath.split(";");
 
@@ -162,11 +172,28 @@ void MainWindow::startCompress()
     postFile.startPost();
 }
 
+void MainWindow::forzenWidget(QWidget &widget, bool forzen)
+{
+    widget.setEnabled(forzen);
+    if (forzen) {
+        forzenWidgets->removeOne(widget);
+    }else {
+        forzenWidgets->append(widget);
+    }
+
+}
+
 void MainWindow::compressedSuccess(const QString &url,const QString &srcFile)
 {
     qInfo() << "文件压缩成功";
     ui->label->setText(ui->label->text().append("\r\n").append(url));
-    DownloadFile* downloadFile = new DownloadFile(this,url,saveDir,"filemane",srcFile);
+    DownloadFile* downloadFile;
+    if (needOverride) {
+        downloadFile = new DownloadFile(this, url, srcFile, true);
+    }else {
+        downloadFile = new DownloadFile(this, url, saveDir, srcFile);
+    }
+
     connect(downloadFile,SIGNAL(onDownloadSuccess(QString,QString)),this,SLOT(onDownloadSuccess(QString,QString)));
     downloadFile->startDownload();
 }
@@ -176,11 +203,17 @@ void MainWindow::onDownloadSuccess(const QString &srcFilePath, const QString &ne
     ui->progressBar->setValue(ui->progressBar->value()+1);
     if (allFiles->isEmpty()) {
         QMessageBox::information(this, "提示", "图片压缩成功");
-        forzenWidgets(true);
+        toggleWidgetsStatus(true);
     }
     else {
         startCompress();
     }
+}
+
+void MainWindow::overrideSrcClicked(bool checked)
+{
+    forzenWidget(*ui->filePathSaveEdit, checked);
+    forzenWidget(*ui->browserFileSaveBtn, checked);
 }
 
 QString MainWindow::getUserPath()
@@ -189,7 +222,7 @@ QString MainWindow::getUserPath()
     return userPath;
 }
 
-void MainWindow::forzenWidgets(bool forzen){
+void MainWindow::toggleWidgetsStatus(bool forzen){
     ui->progressBar->setValue(0);
 
     ui->overrideSrc->setEnabled(forzen);
@@ -199,8 +232,10 @@ void MainWindow::forzenWidgets(bool forzen){
     ui->filePathSaveEdit->setEnabled(forzen);
     ui->browserFileSaveBtn->setEnabled(forzen);
 
-    //禁用不支持的功能控件
-    ui->testBtn->setEnabled(false);
-    ui->overrideSrc->setEnabled(false);
-
+    //todo 完善迭代修改需要冻结的控件
+    if (!forzen) {
+        for (int i = 0;i<forzenWidgets->length();i++) {
+            forzenWidgets->at(i);
+        }
+    }
 }

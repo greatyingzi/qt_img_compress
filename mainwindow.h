@@ -2,7 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-
+#include <QList>
+#include <QWidget>
 #include "cfiledialog.h"
 
 QT_BEGIN_NAMESPACE
@@ -18,9 +19,10 @@ public:
     QString getUserPath();
     ~MainWindow();
 
-    void forzenWidgets(bool forzen);
+    void toggleWidgetsStatus(bool forzen);
     void scanFile(QString path, QStringList &fileList);
     void startCompress();
+    void forzenWidget(QWidget &widget,bool forzen);
 private slots:
     void btnOpenSrcFileClick();
     void onSrcFileChiose();
@@ -29,7 +31,7 @@ private slots:
     void btnCompressClick();
     void compressedSuccess(const QString &url,const QString &srcFile);
     void onDownloadSuccess(const QString &srcFilePath, const QString &newPath);
-
+    void overrideSrcClicked(bool checked);
 private:
     Ui::MainWindow *ui;
     CFileDialog *fileSrcDialog;
@@ -38,5 +40,6 @@ private:
     QString currentFile;
     QStringList *allFiles;
     QString saveDir;
+    QList<QWidget> *forzenWidgets;
 };
 #endif // MAINWINDOW_H

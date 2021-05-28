@@ -78,19 +78,6 @@
      <string>压缩</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="testBtn">
-    <property name="geometry">
-     <rect>
-      <x>230</x>
-      <y>300</y>
-      <width>117</width>
-      <height>37</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>测试</string>
-    </property>
-   </widget>
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
@@ -146,26 +133,32 @@
        </property>
       </widget>
      </item>
-     <item>
-      <widget class="QCheckBox" name="overrideSrc">
-       <property name="text">
-        <string>保持目录结构</string>
-       </property>
-      </widget>
-     </item>
     </layout>
    </widget>
    <widget class="QProgressBar" name="progressBar">
     <property name="geometry">
      <rect>
-      <x>230</x>
-      <y>240</y>
-      <width>118</width>
+      <x>117</x>
+      <y>250</y>
+      <width>351</width>
       <height>23</height>
      </rect>
     </property>
     <property name="value">
      <number>0</number>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="overrideSrc">
+    <property name="geometry">
+     <rect>
+      <x>60</x>
+      <y>300</y>
+      <width>101</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>保持目录结构</string>
     </property>
    </widget>
   </widget>
@@ -185,9 +178,7 @@
   <tabstop>filePathEdit</tabstop>
   <tabstop>filePathSaveEdit</tabstop>
   <tabstop>browserFileSaveBtn</tabstop>
-  <tabstop>overrideSrc</tabstop>
   <tabstop>compressBtn</tabstop>
-  <tabstop>testBtn</tabstop>
  </tabstops>
  <resources/>
  <connections/>

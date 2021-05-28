@@ -2,14 +2,17 @@
 #include <QDesktopServices>
 #include <QFileInfo>
 #include <QMessageBox>
+#include <QDir>
 
-DownloadFile::DownloadFile(QWidget*parent, const QString &url, const QString &saveDir, const QString &fileName, const QString &srcFilePath){
+DownloadFile::DownloadFile(QWidget*parent, const QString &url, const QString &saveDir, const QString &srcFilePath){
     this->url = url;
     this->srcFilePath = srcFilePath;
+    this->overrideSrcFile = false;
     this->saveDir = saveDir;
-    this->fileName = fileName;
+    QFile srcFile(srcFilePath);
+    this->fileName = srcFile.fileName();
     QString saveFileTmp = this->saveDir;
-    m_file = new QFile(saveFileTmp.append("/compressed_").append(QFileInfo(srcFilePath).fileName()));
+    m_file = new QFile(saveFileTmp.append(QFileInfo(srcFilePath).fileName()));
     if (!m_file->open(QIODevice::WriteOnly)) {
         QMessageBox::information(parent, "提示", "打开临时文件错误");
         return;
@@ -17,6 +20,17 @@ DownloadFile::DownloadFile(QWidget*parent, const QString &url, const QString &sa
     qInfo() << "DownloadFile 初始化";
 }
 
+DownloadFile::DownloadFile(QWidget*parent, const QString &url, const QString &srcFilePath, bool overrideSrcFile){
+    this->url = url;
+    this->srcFilePath = srcFilePath;
+    this->overrideSrcFile = overrideSrcFile;
+    m_file = new QFile(srcFilePath);
+    if (!m_file->open(QIODevice::WriteOnly)) {
+        QMessageBox::information(parent, "提示", "打开临时文件错误");
+        return;
+    }
+    qInfo() << "DownloadFile 初始化";
+}
 
 void DownloadFile::startDownload()
 {
@@ -59,6 +73,11 @@ void DownloadFile::onFinished()
 //读取下载的数据
 void DownloadFile::onReadyRead()
 {
+    if (this->saveDir != nullptr && !overrideSrcFile) {
+        QFileInfo tmpfileInfo(srcFilePath);
+        QDir dir = tmpfileInfo.dir();
+        m_file  = new QFile(dir.path().append(QDir::separator()).append(prefix).append(fileName));
+    }
     m_file->write(m_reply->readAll());   //将返回的数据进行读取，写入到临时文件中
 }
 

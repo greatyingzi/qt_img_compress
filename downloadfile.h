@@ -10,16 +10,18 @@ class DownloadFile : public QObject
 {
     Q_OBJECT
 public:
-    explicit DownloadFile(QWidget *parent, const QString &url, const QString &saveDir, const QString &fileName, const QString &srcFilePath);
-
+    DownloadFile(QWidget *parent, const QString &url, const QString &saveDir, const QString &srcFilePath);
+    DownloadFile(QWidget *parent, const QString &url, const QString &srcFilePath, bool overrideSrcFile);
     void startDownload();
 
     ~DownloadFile();
 private:
+    QString prefix = "compressed_";
     QString url;
     QString srcFilePath;
     QString saveDir;
     QString fileName;
+    bool overrideSrcFile;
 
     QNetworkAccessManager* m_networkManager;   //网络管理
     QNetworkReply* m_reply;                    //网络响应
