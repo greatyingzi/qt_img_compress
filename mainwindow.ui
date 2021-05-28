@@ -49,7 +49,17 @@
      <item>
       <widget class="QPushButton" name="browserFileBtn">
        <property name="text">
-        <string>浏览文件</string>
+        <string>浏览</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="selectDirCheckBox">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="text">
+        <string>选择文件夹</string>
        </property>
       </widget>
      </item>
@@ -66,19 +76,6 @@
     </property>
     <property name="text">
      <string>压缩</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="overrideSrc">
-    <property name="geometry">
-     <rect>
-      <x>50</x>
-      <y>310</y>
-      <width>121</width>
-      <height>24</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>覆盖源文件</string>
     </property>
    </widget>
    <widget class="QPushButton" name="testBtn">
@@ -149,6 +146,13 @@
        </property>
       </widget>
      </item>
+     <item>
+      <widget class="QCheckBox" name="overrideSrc">
+       <property name="text">
+        <string>保持目录结构</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </widget>
    <widget class="QProgressBar" name="progressBar">
@@ -179,7 +183,6 @@
  </widget>
  <tabstops>
   <tabstop>filePathEdit</tabstop>
-  <tabstop>browserFileBtn</tabstop>
   <tabstop>filePathSaveEdit</tabstop>
   <tabstop>browserFileSaveBtn</tabstop>
   <tabstop>overrideSrc</tabstop>

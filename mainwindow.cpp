@@ -39,10 +39,15 @@ void MainWindow::btnOpenSrcFileClick()
     fileSrcDialog = new CFileDialog(this);
     connect(fileSrcDialog,SIGNAL(accepted()),this,SLOT(onSrcFileChiose()));
     fileSrcDialog->setDirectory(getUserPath());
-    fileSrcDialog->setFileMode(QFileDialog::FileMode::Directory);
+    if (ui->selectDirCheckBox->isChecked()) {
+        fileSrcDialog->setFileMode(QFileDialog::FileMode::Directory);
+        fileSrcDialog->setNameFilter(tr("All Images (*.jpg *.jpeg *.png);;"
+                                        /*"All Texts (*.txt *.text *.html);;"*/));
+    }else {
+        fileSrcDialog->setFileMode(QFileDialog::FileMode::AnyFile);
+    }
     fileSrcDialog->setAcceptMode(QFileDialog::AcceptMode::AcceptOpen);
-    fileSrcDialog->setNameFilter(tr("All Images (*.jpg *.jpeg *.png);;"
-                                    /*"All Texts (*.txt *.text *.html);;"*/));
+
     fileSrcDialog->exec();
 }
 
@@ -69,7 +74,7 @@ void MainWindow::btnOpenSaveDirClick()
     fileSrcDialog = new CFileDialog(this);
     connect(fileSrcDialog,SIGNAL(accepted()),this,SLOT(onSaveDirChiose()));
     fileSrcDialog->setDirectory(getUserPath());
-    fileSrcDialog->setFileMode(QFileDialog::FileMode::Directory);
+    fileSrcDialog->setFileMode(QFileDialog::FileMode::DirectoryOnly);
     fileSrcDialog->setAcceptMode(QFileDialog::AcceptMode::AcceptOpen);
 
     fileSrcDialog->exec();

@@ -18,9 +18,6 @@ CFileDialog::CFileDialog(QWidget *parent)
         pTreeView->setSelectionMode(QAbstractItemView::ExtendedSelection);
 
     //    QDialogButtonBox *pButton = this->findChild<QDialogButtonBox *>("buttonBox");
-
-    //    disconnect(pButton, SIGNAL(accepted()), this, SLOT(accept()));//使链接失效
-    //    connect(pButton, SIGNAL(accepted()), this, SLOT(onChiose()));//改成自己的槽
 }
 
 CFileDialog::~CFileDialog()
