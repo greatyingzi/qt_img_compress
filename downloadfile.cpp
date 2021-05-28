@@ -14,21 +14,25 @@ DownloadFile::DownloadFile(QWidget*parent, const QString &url, const QString &sa
         QMessageBox::information(parent, "提示", "打开临时文件错误");
         return;
     }
+    qInfo() << "DownloadFile 初始化";
 }
 
 
 void DownloadFile::startDownload()
 {
+    qInfo() << "DownloadFile startDownload";
     this->m_networkManager = new QNetworkAccessManager();
     m_reply = m_networkManager->get(QNetworkRequest(url));
 
     connect(m_reply, SIGNAL(finished()), this, SLOT(onFinished()));
     connect(m_reply, SIGNAL(readyRead()), this, SLOT(onReadyRead()));
+    qInfo() << "DownloadFile startDownload end";
 }
 
 //网络响应结束
 void DownloadFile::onFinished()
 {
+    qInfo() << "DownloadFile onFinished";
     QFileInfo fileInfo;
     fileInfo.setFile(m_file->fileName());
 
@@ -49,6 +53,7 @@ void DownloadFile::onFinished()
     //        QDesktopServices::openUrl(QUrl::fromLocalFile(fileInfo.absoluteFilePath()));  //使用默认软件的打开下载的文件
 
     //    ui->btnDown->setEnabled(true);
+    delete this;
 }
 
 //读取下载的数据

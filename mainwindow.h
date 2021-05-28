@@ -20,13 +20,13 @@ public:
 
     void forzenWidgets(bool forzen);
     void scanFile(QString path, QStringList &fileList);
+    void startCompress();
 private slots:
     void btnOpenSrcFileClick();
     void onSrcFileChiose();
     void btnOpenSaveDirClick();
     void onSaveDirChiose();
     void btnCompressClick();
-    void startCompress();
     void compressedSuccess(const QString &url,const QString &srcFile);
     void onDownloadSuccess(const QString &srcFilePath, const QString &newPath);
 

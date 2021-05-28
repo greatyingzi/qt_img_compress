@@ -75,7 +75,6 @@ void MainWindow::btnOpenSaveDirClick()
     fileSrcDialog->exec();
 }
 
-
 void MainWindow::onSaveDirChiose()
 {
     QString files = "";
@@ -111,13 +110,15 @@ void MainWindow::btnCompressClick()
 
     QFile tmpFile(tmpFilePath);
     QFileInfo tmpFileInfo(tmpFile);
+
     if (tmpFileInfo.isFile()){
         allFiles->append(tmpFilePath);
     }else {
         //todo 遍历文件夹，获取文件列表
         scanFile(tmpFilePath, *allFiles);
     }
-
+    ui->progressBar->setMaximum(allFiles->size());
+    ui->progressBar->setValue(0);
     startCompress();
 }
 
@@ -156,17 +157,22 @@ void MainWindow::startCompress()
 void MainWindow::compressedSuccess(const QString &url,const QString &srcFile)
 {
     qInfo() << "文件压缩成功";
-    ui->label->setText(ui->label->text().append(url));
-    DownloadFile downloadFile(this, url,saveDir,"filemane",srcFile);
-    connect(&downloadFile,SIGNAL(onDownloadSuccess(QString,QString)),this,SLOT(onDownloadSuccess(QString,QString)));
-    downloadFile.startDownload();
+    ui->label->setText(ui->label->text().append("\r\n").append(url));
+    DownloadFile* downloadFile = new DownloadFile(this,url,saveDir,"filemane",srcFile);
+    connect(downloadFile,SIGNAL(onDownloadSuccess(QString,QString)),this,SLOT(onDownloadSuccess(QString,QString)));
+    downloadFile->startDownload();
 }
 
 void MainWindow::onDownloadSuccess(const QString &srcFilePath, const QString &newPath)
 {
-    QMessageBox::information(this, "提示", "图片压缩成功");
-    forzenWidgets(true);
-    startCompress();
+    ui->progressBar->setValue(ui->progressBar->value()+1);
+    if (allFiles->isEmpty()) {
+        QMessageBox::information(this, "提示", "图片压缩成功");
+        forzenWidgets(true);
+    }
+    else {
+        startCompress();
+    }
 }
 
 QString MainWindow::getUserPath()
@@ -176,6 +182,8 @@ QString MainWindow::getUserPath()
 }
 
 void MainWindow::forzenWidgets(bool forzen){
+    ui->progressBar->setValue(0);
+
     ui->overrideSrc->setEnabled(forzen);
     ui->filePathEdit->setEnabled(forzen);
     ui->browserFileBtn->setEnabled(forzen);
