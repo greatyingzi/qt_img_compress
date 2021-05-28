@@ -41,10 +41,10 @@ void MainWindow::btnOpenSrcFileClick()
     fileSrcDialog->setDirectory(getUserPath());
     if (ui->selectDirCheckBox->isChecked()) {
         fileSrcDialog->setFileMode(QFileDialog::FileMode::Directory);
+    }else {
+        fileSrcDialog->setFileMode(QFileDialog::FileMode::ExistingFiles);
         fileSrcDialog->setNameFilter(tr("All Images (*.jpg *.jpeg *.png);;"
                                         /*"All Texts (*.txt *.text *.html);;"*/));
-    }else {
-        fileSrcDialog->setFileMode(QFileDialog::FileMode::AnyFile);
     }
     fileSrcDialog->setAcceptMode(QFileDialog::AcceptMode::AcceptOpen);
 
@@ -112,15 +112,18 @@ void MainWindow::btnCompressClick()
 
     needOverride = ui->overrideSrc->isChecked();
     QString tmpFilePath = ui->filePathEdit->text();
+    auto filelist = tmpFilePath.split(";");
 
-    QFile tmpFile(tmpFilePath);
-    QFileInfo tmpFileInfo(tmpFile);
+    foreach (QString s, filelist) {
+        QFile tmpFile(s);
+        QFileInfo tmpFileInfo(s);
 
-    if (tmpFileInfo.isFile()){
-        allFiles->append(tmpFilePath);
-    }else {
-        //todo 遍历文件夹，获取文件列表
-        scanFile(tmpFilePath, *allFiles);
+        if (tmpFileInfo.isFile()){
+            allFiles->append(s);
+        } else {
+            //todo 遍历文件夹，获取文件列表
+            scanFile(tmpFilePath, *allFiles);
+        }
     }
     ui->progressBar->setMaximum(allFiles->size());
     ui->progressBar->setValue(0);
