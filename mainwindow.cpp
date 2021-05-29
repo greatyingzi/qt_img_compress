@@ -10,6 +10,8 @@
 #include <QMessageBox>
 #include <QDirIterator>
 #include <QStringList>
+#include <QList>
+#include <QListWidget>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -18,7 +20,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     setFixedSize(600,400);
     this->allFiles = new QStringList();
-    this->forzenWidgets = new QList<QWidget>();
+    this->forzenWidgets = new QList<QWidget*>();
     //    setWindowIcon(QIcon(":res/img/compress.png"));
 
     qInfo() << "MainWindow初始化。";
@@ -26,9 +28,9 @@ MainWindow::MainWindow(QWidget *parent)
     QObject::connect(ui->browserFileBtn, SIGNAL(clicked()), this, SLOT(btnOpenSrcFileClick()));
     QObject::connect(ui->browserFileSaveBtn, SIGNAL(clicked()), this, SLOT(btnOpenSaveDirClick()));
     QObject::connect(ui->compressBtn,SIGNAL(clicked()),this,SLOT(btnCompressClick()));
-    QObject::connect(ui->overrideSrc,SIGNAL(clicked(bool)),ui->filePathSaveEdit,SLOT(setDisabled(bool)));
-    QObject::connect(ui->overrideSrc,SIGNAL(clicked(bool)),ui->browserFileSaveBtn,SLOT(setDisabled(bool)));
-    QObject::connect(ui->overrideSrc,SIGNAL(clicked(bool)),this,SLOT(overrideSrcClicked(bool)));
+//    QObject::connect(ui->overrideSrc,SIGNAL(clicked(bool)),ui->filePathSaveEdit,SLOT(setDisabled(bool)));
+//    QObject::connect(ui->overrideSrc,SIGNAL(clicked(bool)),ui->browserFileSaveBtn,SLOT(setDisabled(bool)));
+    QObject::connect(ui->overrideSrc,SIGNAL(stateChanged(int)),this,SLOT(overrideSrcStateChanged(int)));
     toggleWidgetsStatus(true);
 }
 
@@ -174,11 +176,15 @@ void MainWindow::startCompress()
 
 void MainWindow::forzenWidget(QWidget &widget, bool forzen)
 {
-    widget.setEnabled(forzen);
-    if (forzen) {
-        forzenWidgets->removeOne(widget);
+    widget.setEnabled(!forzen);
+
+    if (!forzen) {
+        forzenWidgets->removeOne(&widget);
+//        forzenWidgets->takeAt(forzenWidgets->indexOf(&widget,0));
     }else {
-        forzenWidgets->append(widget);
+//        forzenWidgets->append(widget);
+        forzenWidgets->insert(0, &widget);
+
     }
 
 }
@@ -210,8 +216,9 @@ void MainWindow::onDownloadSuccess(const QString &srcFilePath, const QString &ne
     }
 }
 
-void MainWindow::overrideSrcClicked(bool checked)
+void MainWindow::overrideSrcStateChanged(int state)
 {
+    bool checked = state==Qt::CheckState::Checked;
     forzenWidget(*ui->filePathSaveEdit, checked);
     forzenWidget(*ui->browserFileSaveBtn, checked);
 }
@@ -235,7 +242,7 @@ void MainWindow::toggleWidgetsStatus(bool forzen){
     //todo 完善迭代修改需要冻结的控件
     if (!forzen) {
         for (int i = 0;i<forzenWidgets->length();i++) {
-            forzenWidgets->at(i);
+            forzenWidgets->value(i)->setEnabled(forzen);
         }
     }
 }

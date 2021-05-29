@@ -5,6 +5,7 @@
 #include <QList>
 #include <QWidget>
 #include "cfiledialog.h"
+#include <QList>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -31,7 +32,7 @@ private slots:
     void btnCompressClick();
     void compressedSuccess(const QString &url,const QString &srcFile);
     void onDownloadSuccess(const QString &srcFilePath, const QString &newPath);
-    void overrideSrcClicked(bool checked);
+    void overrideSrcStateChanged(int state);
 private:
     Ui::MainWindow *ui;
     CFileDialog *fileSrcDialog;
@@ -40,6 +41,6 @@ private:
     QString currentFile;
     QStringList *allFiles;
     QString saveDir;
-    QList<QWidget> *forzenWidgets;
+    QList<QWidget*> *forzenWidgets;
 };
 #endif // MAINWINDOW_H

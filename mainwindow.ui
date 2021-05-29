@@ -158,7 +158,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>保持目录结构</string>
+     <string>覆盖源文件</string>
     </property>
    </widget>
   </widget>
@@ -168,7 +168,7 @@
      <x>0</x>
      <y>0</y>
      <width>611</width>
-     <height>23</height>
+     <height>25</height>
     </rect>
    </property>
   </widget>
