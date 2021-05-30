@@ -21,6 +21,8 @@ jobs:
         cd /opt/qt_img_compress/src/
     - name: Compile
       run: |
+        pwd
+        ls
         qmake qt_img_compress.pro
         make -j4 
     - name: Build deb package
