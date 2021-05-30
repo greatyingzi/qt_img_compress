@@ -4,7 +4,6 @@
 #include "cfiledialog.h"
 #include <QDebug>
 #include <QStandardPaths>
-#include "networkrequestcallback.h"
 #include "postfile.h"
 #include "downloadfile.h"
 #include <QMessageBox>
