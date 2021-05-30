@@ -19,5 +19,14 @@ jobs:
       run: |
         git clone https://github.com/greatyingzi/qt_img_compress.git /opt/qt_img_compress
         cd /opt/qt_img_compress/src/
+    - name: Compile
+      run: |
         qmake qt_img_compress.pro
         make -j4 
+    - name: Build deb package
+      run: |
+        cd ..
+        mkdir ./deb_pack/usr/bin/
+        cp ./src/qt_img_compress ./deb_pack/usr/bin/
+        dpkg-deb -b ./deb_pack qt-img-compress.deb
+        ls
