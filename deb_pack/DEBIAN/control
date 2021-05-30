@@ -1,0 +1,10 @@
+Package:qt-img-compress
+Version:0.0.1
+Description:qt_img_compress
+Section:Utils
+Priority:extra
+Architecture:amd64
+Installed-Size:131566
+Depends:
+Pre-Depends:
+Maintainer:yitin

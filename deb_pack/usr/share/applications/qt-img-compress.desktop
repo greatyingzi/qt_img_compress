@@ -1,0 +1,9 @@
+ [Desktop Entry]
+Encoding=UTF-8
+Version=0.0.1
+Type=Application
+Terminal=false
+Exec=/usr/bin/qt_img_compress
+Categories=Utility
+Name=qt img compress
+Icon=/usr/share/icons/qt-img-compress.png

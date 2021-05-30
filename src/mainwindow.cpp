@@ -20,6 +20,7 @@ MainWindow::MainWindow(QWidget *parent)
     setFixedSize(600,400);
     this->allFiles = new QStringList();
     this->forzenWidgets = new QList<QWidget*>();
+    ui->logTextView->setReadOnly(true);
     //    setWindowIcon(QIcon(":res/img/compress.png"));
 
     qInfo() << "MainWindow初始化。";
@@ -27,8 +28,8 @@ MainWindow::MainWindow(QWidget *parent)
     QObject::connect(ui->browserFileBtn, SIGNAL(clicked()), this, SLOT(btnOpenSrcFileClick()));
     QObject::connect(ui->browserFileSaveBtn, SIGNAL(clicked()), this, SLOT(btnOpenSaveDirClick()));
     QObject::connect(ui->compressBtn,SIGNAL(clicked()),this,SLOT(btnCompressClick()));
-//    QObject::connect(ui->overrideSrc,SIGNAL(clicked(bool)),ui->filePathSaveEdit,SLOT(setDisabled(bool)));
-//    QObject::connect(ui->overrideSrc,SIGNAL(clicked(bool)),ui->browserFileSaveBtn,SLOT(setDisabled(bool)));
+    //    QObject::connect(ui->overrideSrc,SIGNAL(clicked(bool)),ui->filePathSaveEdit,SLOT(setDisabled(bool)));
+    //    QObject::connect(ui->overrideSrc,SIGNAL(clicked(bool)),ui->browserFileSaveBtn,SLOT(setDisabled(bool)));
     QObject::connect(ui->overrideSrc,SIGNAL(stateChanged(int)),this,SLOT(overrideSrcStateChanged(int)));
     toggleWidgetsStatus(true);
 }
@@ -179,9 +180,9 @@ void MainWindow::forzenWidget(QWidget &widget, bool forzen)
 
     if (!forzen) {
         forzenWidgets->removeOne(&widget);
-//        forzenWidgets->takeAt(forzenWidgets->indexOf(&widget,0));
+        //        forzenWidgets->takeAt(forzenWidgets->indexOf(&widget,0));
     }else {
-//        forzenWidgets->append(widget);
+        //        forzenWidgets->append(widget);
         forzenWidgets->insert(0, &widget);
 
     }
@@ -191,7 +192,8 @@ void MainWindow::forzenWidget(QWidget &widget, bool forzen)
 void MainWindow::compressedSuccess(const QString &url,const QString &srcFile)
 {
     qInfo() << "文件压缩成功";
-    ui->label->setText(ui->label->text().append("\r\n").append(url));
+
+    ui->logTextView->append(QString(srcFile).append(" >>> ").append(url));
     DownloadFile* downloadFile;
     if (needOverride) {
         downloadFile = new DownloadFile(this, url, srcFile, true);
@@ -238,10 +240,8 @@ void MainWindow::toggleWidgetsStatus(bool forzen){
     ui->filePathSaveEdit->setEnabled(forzen);
     ui->browserFileSaveBtn->setEnabled(forzen);
 
-    //todo 完善迭代修改需要冻结的控件
-    if (!forzen) {
-        for (int i = 0;i<forzenWidgets->length();i++) {
-            forzenWidgets->value(i)->setEnabled(forzen);
-        }
+    //迭代修改需要冻结的控件
+    for (int i = 0;i<forzenWidgets->length();i++) {
+        forzenWidgets->value(i)->setEnabled(false);
     }
 }

@@ -25,7 +25,7 @@ FORMS += \
     mainwindow.ui
 
 TRANSLATIONS += \
-    qt_demo_app_zh_CN.ts
+    qt_img_compress_zh_CN.ts
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

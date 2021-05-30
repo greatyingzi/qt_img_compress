@@ -78,22 +78,6 @@
      <string>压缩</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label">
-    <property name="geometry">
-     <rect>
-      <x>60</x>
-      <y>140</y>
-      <width>471</width>
-      <height>91</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-    </property>
-   </widget>
    <widget class="QWidget" name="horizontalLayoutWidget_2">
     <property name="geometry">
      <rect>
@@ -138,8 +122,8 @@
    <widget class="QProgressBar" name="progressBar">
     <property name="geometry">
      <rect>
-      <x>117</x>
-      <y>250</y>
+      <x>120</x>
+      <y>270</y>
       <width>351</width>
       <height>23</height>
      </rect>
@@ -159,6 +143,16 @@
     </property>
     <property name="text">
      <string>覆盖源文件</string>
+    </property>
+   </widget>
+   <widget class="QTextEdit" name="logTextView">
+    <property name="geometry">
+     <rect>
+      <x>50</x>
+      <y>120</y>
+      <width>491</width>
+      <height>141</height>
+     </rect>
     </property>
    </widget>
   </widget>
