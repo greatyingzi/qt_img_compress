@@ -17,9 +17,9 @@
    <widget class="QWidget" name="horizontalLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>50</x>
-      <y>20</y>
-      <width>491</width>
+      <x>30</x>
+      <y>0</y>
+      <width>551</width>
       <height>41</height>
      </rect>
     </property>
@@ -69,7 +69,7 @@
     <property name="geometry">
      <rect>
       <x>449</x>
-      <y>300</y>
+      <y>330</y>
       <width>91</width>
       <height>41</height>
      </rect>
@@ -81,9 +81,9 @@
    <widget class="QWidget" name="horizontalLayoutWidget_2">
     <property name="geometry">
      <rect>
-      <x>50</x>
-      <y>70</y>
-      <width>491</width>
+      <x>30</x>
+      <y>40</y>
+      <width>551</width>
       <height>41</height>
      </rect>
     </property>
@@ -123,7 +123,7 @@
     <property name="geometry">
      <rect>
       <x>120</x>
-      <y>270</y>
+      <y>300</y>
       <width>351</width>
       <height>23</height>
      </rect>
@@ -136,7 +136,7 @@
     <property name="geometry">
      <rect>
       <x>60</x>
-      <y>300</y>
+      <y>340</y>
       <width>101</width>
       <height>31</height>
      </rect>
@@ -148,10 +148,10 @@
    <widget class="QTextEdit" name="logTextView">
     <property name="geometry">
      <rect>
-      <x>50</x>
-      <y>120</y>
-      <width>491</width>
-      <height>141</height>
+      <x>30</x>
+      <y>80</y>
+      <width>551</width>
+      <height>211</height>
      </rect>
     </property>
    </widget>
@@ -166,7 +166,11 @@
     </rect>
    </property>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QStatusBar" name="statusbar">
+   <property name="sizeGripEnabled">
+    <bool>false</bool>
+   </property>
+  </widget>
  </widget>
  <tabstops>
   <tabstop>filePathEdit</tabstop>

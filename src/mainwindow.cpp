@@ -17,11 +17,13 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    setWindowIcon(QIcon("icon.png"));
+    setStatusBar(nullptr);
     setFixedSize(600,400);
     this->allFiles = new QStringList();
     this->forzenWidgets = new QList<QWidget*>();
     ui->logTextView->setReadOnly(true);
-    //    setWindowIcon(QIcon(":res/img/compress.png"));
+
 
     qInfo() << "MainWindow初始化。";
 
