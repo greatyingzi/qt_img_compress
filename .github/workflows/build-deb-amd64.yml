@@ -1,0 +1,23 @@
+name: build-deb-amd64
+
+on:
+  release:
+    types: [ published ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-18.04
+
+    steps:
+    - uses: actions/checkout@master
+    - name: Initialization environment
+      run: |
+        sudo apt-get update
+        sudo apt-get -y install qmake qtcreateor qtbase-dev cmake gcc git 
+    - name: Clone source code
+      run: |
+        git clone https://github.com/greatyingzi/qt_img_compress.git /opt/qt_img_compress
+        cd /opt/qt_img_compress/src/
+        qmake qt_img_compress.pro
+        make -j4 
