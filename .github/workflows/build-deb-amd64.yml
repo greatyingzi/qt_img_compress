@@ -29,5 +29,6 @@ jobs:
         cd /opt/qt_img_compress/
         mkdir ./deb_pack/usr/bin/
         cp ./src/qt_img_compress ./deb_pack/usr/bin/
+        chmod 755 ./deb_pack/*
         dpkg-deb -b ./deb_pack qt-img-compress.deb
         ls
